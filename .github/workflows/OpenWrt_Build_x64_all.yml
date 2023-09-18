@@ -23,7 +23,7 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: x64_all.config
+  CONFIG_FILE: x64_all
   DIY_P1_SH: diy6.0.sh
   DIY_P2_SH: diy.sh
   SSH_ACTIONS: false
@@ -157,12 +157,16 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         rm -rf packages && mkdir packages
-        find -name "*esxi-flat.vmdk*" | xargs -i mv -f {} packages
+        #find -name "*esxi-flat.vmdk*" | xargs -i mv -f {} packages
+        find -name "*.vmdk*" | xargs -i mv -f {} packages
+        find -name "profiles.json" | xargs -i mv -f {} packages
+        find -name "sha256sums" | xargs -i mv -f {} packages
+        find -name "*.buildinfo*" | xargs -i mv -f {} packages
         find -name "*kernel.bin*" | xargs -i mv -f {} packages
         find -name "*rootfs*" | xargs -i mv -f {} packages
         find -name "*.manifest*" | xargs -i mv -f {} packages
         find -name "*vmlinuz*" | xargs -i mv -f {} packages
-        find -name "*esxi.vmdk*" | xargs -i mv -f {} packages
+        #find -name "*esxi.vmdk*" | xargs -i mv -f {} packages
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -171,7 +175,8 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_6.0${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        #name: OpenWrt_6.0${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_${CONFIG_FILE}_${FILE_DATE}-${LINUX_KERNEL}
         path: ${{ env.FIRMWARE }}
 
     - name: 上传固件到NN网盘
@@ -207,7 +212,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        name: ${{ env.FILE_TIME }} 「 openwrt6.1-X86-64 」
+        name: OpenWrt_X64_all-${{ env.FILE_TIME }}
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
