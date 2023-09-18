@@ -176,7 +176,7 @@ jobs:
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         #name: OpenWrt_6.0${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        name: OpenWrt_${CONFIG_FILE}_${FILE_DATE}-${LINUX_KERNEL}
+        name: OpenWrt_${{ env.CONFIG_FILE }}_${{ env.FILE_DATE }}-${{ env.LINUX_KERNEL }}
         path: ${{ env.FIRMWARE }}
 
     - name: 上传固件到NN网盘
