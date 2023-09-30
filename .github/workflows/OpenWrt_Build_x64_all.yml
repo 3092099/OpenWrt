@@ -16,8 +16,8 @@ on:
         description: 'SSH connection to Actions'
         required: false
         default: 'false'
-  schedule:
-    - cron: 0 2 * * 5
+  #schedule:
+    #- cron: 0 2 * * 5
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -36,26 +36,24 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: 检查项目分支
       uses: actions/checkout@main
 
-    - name: 清理磁盘空间
+    - name: 释放Ubuntu磁盘空间
       uses: jlumbroso/free-disk-space@main
       with:
         # this might remove tools that are actually needed,
         # if set to "true" but frees about 6 GB
         tool-cache: false
-
         # all of these default to true, but feel free to set to
         # "false" if necessary for your workflow
         android: true
         dotnet: true
         haskell: true
-        large-packages: true
-        docker-images: true
+        #large-packages: true
         swap-storage: true
 
     - name: 安装编译环境
